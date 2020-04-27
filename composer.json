@@ -1,0 +1,13 @@
+{
+    "name": "mattjmattj/php-dqn",
+    "description": "A basic Deep Q Network implementation in PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthias Jouan",
+            "email": "matthias.jouan@gmail.com"
+        }
+    ],
+    "require": {}
+}
