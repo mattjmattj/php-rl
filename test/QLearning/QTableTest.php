@@ -108,13 +108,8 @@ final class QTableTestState implements State
         $this->code = $code;
     }
 
-    public function serialize(): string
+    public function uid(): string
     {
         return $this->code;
-    }
-
-    public function unserialize($serialized): void
-    {
-        $this->code = $serialized;
     }
 }
