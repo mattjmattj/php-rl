@@ -1,6 +1,6 @@
 {
-    "name": "mattjmattj/php-dqn",
-    "description": "A basic Deep Q Network implementation in PHP",
+    "name": "mattjmattj/php-rl",
+    "description": "A reinforcement learning library in PHP",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -9,5 +9,20 @@
             "email": "matthias.jouan@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "php": ">=7.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "RL\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RL\\Test\\": "test/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.1"
+    }
 }
