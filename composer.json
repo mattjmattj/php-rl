@@ -19,7 +19,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "RL\\Test\\": "test/"
+            "RL\\Test\\": "test/",
+            "RL\\Examples\\TicTacToe\\": "examples/tic-tac-toe/"
         }
     },
     "require-dev": {
