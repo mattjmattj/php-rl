@@ -92,7 +92,27 @@ class QTable
         return $stateUid;
     }
 
-    public function print()
+    public function getLearningRate(): float
+    {
+        return $this->learningRate;
+    }
+
+    public function setLearningRate(float $learningRate): void
+    {
+        $this->learningRate = $learningRate;
+    }
+
+    public function getDiscountFactor(): float
+    {
+        return $this->discountFactor;
+    }
+
+    public function setDiscountFactor(float $discountFactor): void
+    {
+        $this->discountFactor = $discountFactor;
+    }
+
+    public function print(): void
     {
         echo "STATE ";
         echo implode(' ', $this->actionSet->getActionIds());

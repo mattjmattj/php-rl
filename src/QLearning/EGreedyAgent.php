@@ -60,4 +60,24 @@ class EGreedyAgent implements RLAgent
     {
         $this->epsilon = $epsilon;
     }
+
+    public function getLearningRate(): float
+    {
+        return $this->qtable->getLearningRate();
+    }
+
+    public function setLearningRate(float $learningRate): void
+    {
+        $this->qtable->setLearningRate($learningRate);
+    }
+
+    public function getDiscountFactor(): float
+    {
+        return $this->qtable->getDiscountFactor();
+    }
+
+    public function setDiscountFactor(float $discountFactor): void
+    {
+        $this->qtable->setDiscountFactor($discountFactor);
+    }
 }
