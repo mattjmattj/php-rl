@@ -25,7 +25,7 @@ final class QTableTest extends TestCase
         $actionSet->addAction(1);
         $actionSet->addAction(2);
 
-        $qtable = new QTable($actionSet, 0.95, null, $table);
+        $qtable = new QTable($actionSet, 1.0, 0.95, null, $table);
 
         $this->assertEquals($table, $qtable->getTable());
     }
@@ -42,7 +42,7 @@ final class QTableTest extends TestCase
         $actionSet->addAction(1);
         $actionSet->addAction(2);
 
-        $qtable = new QTable($actionSet, 0.95, null, $table);
+        $qtable = new QTable($actionSet, 1.0, 0.95, null, $table);
 
         $this->assertEquals(1, $qtable->act(new QTableTestState('A')));
         $this->assertEquals(2, $qtable->act(new QTableTestState('B')));
@@ -61,7 +61,7 @@ final class QTableTest extends TestCase
         $actionSet->addAction(1);
         $actionSet->addAction(2);
 
-        $qtable = new QTable($actionSet, 0.9, null, $table);
+        $qtable = new QTable($actionSet, 1.0, 0.9, null, $table);
 
         $qtable->learn(
             new QTableTestState('A'),
@@ -92,6 +92,38 @@ final class QTableTest extends TestCase
             [
                 'A' => [2.3,0,0],
                 'B' => [0,3,0],
+                'C' => [0,0,0]
+            ],
+            $qtable->getTable()
+        );
+    }
+
+    public function testCanHaveALearningRate(): void
+    {
+        $table = [
+            'A' => [1,0,0],
+            'B' => [0,2,0],
+            'C' => [0,0,0]
+        ];
+        $actionSet = new ActionSet();
+        $actionSet->addAction(0);
+        $actionSet->addAction(1);
+        $actionSet->addAction(2);
+
+        $qtable = new QTable($actionSet, 0.5, 0.9, null, $table);
+
+        $qtable->learn(
+            new QTableTestState('A'),
+            0,
+            0.5,
+            new QTableTestState('B'),
+            false
+        );
+
+        $this->assertEquals(
+            [
+                'A' => [1.65,0,0],
+                'B' => [0,2,0],
                 'C' => [0,0,0]
             ],
             $qtable->getTable()

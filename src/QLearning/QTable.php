@@ -13,6 +13,9 @@ class QTable
 {
     private array $q;
 
+    /** alpha */
+    private float $learningRate;
+
     /** gamma */
     private float $discountFactor;
 
@@ -22,17 +25,20 @@ class QTable
 
     /**
      * @param ActionSet $actionSet - the ActionSet of the system
+     * @param float $learningRate - the learning rate (default: 1.0)
      * @param float $discountFactor - (optional) the discount factor of the Bellman equation (default: 0.995)
      * @param Closure $initialize - (optional) the callable to call when initializing a cell (default : fn() => 0)
      * @param array $q - (optional) the pre-filled table
      */
     public function __construct(
         ActionSet $actionSet,
+        float $learningRate = 1.0,
         float $discountFactor = 0.995,
         ?Closure $initializer = null,
         array $q = []
     ) {
         $this->actionSet = $actionSet;
+        $this->learningRate = $learningRate;
         $this->discountFactor = $discountFactor;
         $this->initializer = $initializer ?? fn () => 0;
         $this->q = $q;
@@ -53,10 +59,14 @@ class QTable
             // when we are done, the reward is known
             $q = $reward;
         } else {
-            // otherwise, we apply the Bellman equation to update the expected Q
-            // Q(s,a) := r + γmax(Q(s',*))
             $nextUid = $this->initializeQForState($next);
-            $q = $reward + $this->discountFactor * max($this->q[$nextUid]);
+
+            // otherwise, we apply the Bellman equation to update the expected Q
+            // Q(s,a) := Q(s,a) + α(r + γmax(Q(s',*) - Q(s,a))
+            $q = $this->q[$originUid][$actionId];
+            $a = $this->learningRate;
+            $g = $this->discountFactor;
+            $q = $q + $a * ($reward + $g * max($this->q[$nextUid]) -$q);
         }
         $this->q[$originUid][$actionId] = $q;
     }

@@ -18,15 +18,17 @@ class EGreedyAgent implements RLAgent
     /**
      * @param ActionSet $actionSet - the ActionSet of the system
      * @param float $epsilon - the exploration rate (probability of picking a random action)
+     * @param float $learningRate - the learning rate of the q-table
      * @param float $discountFactor - the discount factor of the Bellman equation
      */
     public function __construct(
         ActionSet $actionSet,
         float $epsilon = 1.0,
+        float $learningRate = 1.0,
         float $discountFactor = 0.995
     ) {
         $this->epsilon = $epsilon;
-        $this->qtable = new QTable($actionSet, $discountFactor);
+        $this->qtable = new QTable($actionSet, $learningRate, $discountFactor);
     }
 
     public function act(Environment $env): void
