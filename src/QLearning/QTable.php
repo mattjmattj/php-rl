@@ -3,26 +3,17 @@
 namespace RL\QLearning;
 
 use Closure;
+use RL\SARSA\SARSA;
 use RL\ActionSet;
+use RL\SARSA\Policy;
 use RL\State;
 
 /**
  * A basic implementation of a Q-table
+ * We use a SARSA with a "max" policy
  */
-class QTable
+class QTable extends SARSA
 {
-    private array $q;
-
-    /** alpha */
-    private float $learningRate;
-
-    /** gamma */
-    private float $discountFactor;
-
-    private ActionSet $actionSet;
-
-    private Closure $initializer;
-
     /**
      * @param ActionSet $actionSet - the ActionSet of the system
      * @param float $learningRate - the learning rate (default: 1.0)
@@ -37,90 +28,21 @@ class QTable
         ?Closure $initializer = null,
         array $q = []
     ) {
-        $this->actionSet = $actionSet;
-        $this->learningRate = $learningRate;
-        $this->discountFactor = $discountFactor;
-        $this->initializer = $initializer ?? fn () => 0;
-        $this->q = $q;
-    }
-
-    public function act(State $state): int
-    {
-        $stateUid = $this->initializeQForState($state);
-
-        return array_search(max($this->q[$stateUid]), $this->q[$stateUid]);
-    }
-
-    public function learn(State $origin, int $actionId, float $reward, State $next, bool $done): void
-    {
-        $originUid = $this->initializeQForState($origin);
-
-        if ($done) {
-            // when we are done, the reward is known
-            $q = $reward;
-        } else {
-            $nextUid = $this->initializeQForState($next);
-
-            // otherwise, we apply the Bellman equation to update the expected Q
-            // Q(s,a) := Q(s,a) + α(r + γmax(Q(s',*) - Q(s,a))
-            $q = $this->q[$originUid][$actionId];
-            $a = $this->learningRate;
-            $g = $this->discountFactor;
-            $q = $q + $a * ($reward + $g * max($this->q[$nextUid]) -$q);
-        }
-        $this->q[$originUid][$actionId] = $q;
-    }
-
-    public function getTable(): array
-    {
-        return $this->q;
-    }
-
-    private function initializeQForState(State $state): string
-    {
-        $stateUid = $state->uid();
-
-        if (isset($this->q[$stateUid])) {
-            return $stateUid;
-        }
-
-        $this->q[$stateUid] = [];
-        foreach ($this->actionSet->getActionIds() as $actionId) {
-            $this->q[$stateUid][$actionId] = ($this->initializer)($stateUid, $actionId);
-        }
-
-        return $stateUid;
-    }
-
-    public function getLearningRate(): float
-    {
-        return $this->learningRate;
-    }
-
-    public function setLearningRate(float $learningRate): void
-    {
-        $this->learningRate = $learningRate;
-    }
-
-    public function getDiscountFactor(): float
-    {
-        return $this->discountFactor;
-    }
-
-    public function setDiscountFactor(float $discountFactor): void
-    {
-        $this->discountFactor = $discountFactor;
-    }
-
-    public function print(): void
-    {
-        echo "STATE ";
-        echo implode(' ', $this->actionSet->getActionIds());
-        echo "\n";
-        foreach ($this->q as $state => $qstate) {
-            echo "$state ";
-            echo implode(' ', $qstate);
-            echo "\n";
-        }
+        parent::__construct(
+            $actionSet,
+            new class implements Policy
+            {
+                public function apply(array $qstate): array
+                {
+                    $reward = max($qstate);
+                    $actionId = array_search($reward, $qstate);
+                    return [$actionId, $reward];
+                }
+            },
+            $learningRate,
+            $discountFactor,
+            $initializer,
+            $q
+        );
     }
 }
