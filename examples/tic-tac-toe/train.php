@@ -50,7 +50,7 @@ while ($agent->getEpsilon() > EPSILON_MIN) {
     echo "episode #$episode\n";
     echo "agent played ".(($agentPlayer === TicTacToe::PLAYER_ONE) ? 'first' : 'second')."\n";
     echo "$w wins, $d draws, ".(GAMES_PER_EPOCH-$w-$d)." loss\n";
-    echo (($w + $d/2.0) / GAMES_PER_EPOCH * 100) . "%\n";
+    echo '' . (($w + $d/2.0) / GAMES_PER_EPOCH * 100) . "%\n";
     echo "epsilon : ".$agent->getEpsilon()."\n\n";
 }
 

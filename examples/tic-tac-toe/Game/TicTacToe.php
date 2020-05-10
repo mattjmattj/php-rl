@@ -89,7 +89,7 @@ class TicTacToe
     public function printGrid(): void
     {
         $g = $this->grid;
-        $g = array_map(fn($cell) => $cell == '' ? ' ' : $cell, $g);
+        $g = array_map(fn ($cell) => $cell == '' ? ' ' : $cell, $g);
 
         echo "$g[0]|$g[1]|$g[2]\n";
         echo "-----\n";

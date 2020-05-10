@@ -55,7 +55,7 @@ class SARSA
     public function act(State $state): int
     {
         $stateUid = $this->initializeQForState($state);
-        list($actionId,) = $this->policy->apply($this->q[$stateUid]);
+        list($actionId, ) = $this->policy->apply($this->q[$stateUid]);
         return $actionId;
     }
 
@@ -73,7 +73,7 @@ class SARSA
             $q = $this->q[$originUid][$actionId];
             $a = $this->learningRate;
             $g = $this->discountFactor;
-            list(,$rnext) = $this->policy->apply($this->q[$nextUid]);
+            list(, $rnext) = $this->policy->apply($this->q[$nextUid]);
             $q = $q + $a * ($reward + $g * $rnext -$q);
         }
         $this->q[$originUid][$actionId] = $q;

@@ -13,7 +13,8 @@ class Agent implements RLAgent
 {
     private SARSA $sarsa;
 
-    public function __construct(SARSA $sarsa) {
+    public function __construct(SARSA $sarsa)
+    {
         $this->sarsa = $sarsa;
     }
 

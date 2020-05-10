@@ -12,7 +12,7 @@ class State implements RLState
     public function __construct(TicTacToe $game)
     {
         $g = $game->getGrid();
-        $g = array_map(fn($cell) => $cell == '' ? ' ' : $cell, $g);
+        $g = array_map(fn ($cell) => $cell == '' ? ' ' : $cell, $g);
         $player = $game->getCurrentPlayer();
         $this->uid = <<<EOT
 player: $player

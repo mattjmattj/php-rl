@@ -30,8 +30,7 @@ class QTable extends SARSA
     ) {
         parent::__construct(
             $actionSet,
-            new class implements Policy
-            {
+            new class implements Policy {
                 public function apply(array $qstate): array
                 {
                     $reward = max($qstate);

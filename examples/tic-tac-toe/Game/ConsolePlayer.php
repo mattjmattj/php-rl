@@ -2,7 +2,6 @@
 
 namespace RL\Examples\TicTacToe\Game;
 
-
 class ConsolePlayer implements Player
 {
     public function play(TicTacToe $game): void
