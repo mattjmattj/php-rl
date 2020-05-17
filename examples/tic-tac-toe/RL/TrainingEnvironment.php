@@ -16,6 +16,8 @@ class TrainingEnvironment implements Environment
 
     private Player $opponent;
 
+    private bool $gameOver;
+
     public function __construct(Player $opponent)
     {
         $this->opponent = $opponent;
@@ -36,6 +38,8 @@ class TrainingEnvironment implements Environment
         $this->actionSet->addAction(6, 'A1');
         $this->actionSet->addAction(7, 'B1');
         $this->actionSet->addAction(8, 'C1');
+
+        $this->gameOver = false;
     }
 
     public function getActionSet(): ActionSet
@@ -55,35 +59,39 @@ class TrainingEnvironment implements Environment
             $this->game->play($currentPlayer, $actionId);
         } catch (\Exception $e) {
             // an exception means an invalid action : negative reward
-            return -10;
+            $this->gameOver = true;
+            return -1.0;
         }
 
         if ($this->game->getWinner() === $currentPlayer) {
             // agent won
-            return 10;
+            $this->gameOver = true;
+            return 1.0;
         }
 
         if ($this->game->getWinner() === TicTacToe::DRAW) {
             // the game is a draw
-            return 5;
+            $this->gameOver = true;
+            return 0.5;
         }
 
-        // now the random opponent plays
+        // now the opponent plays
         $currentPlayer = $this->game->getCurrentPlayer();
         $this->opponent->play($this->game);
 
         if ($this->game->getWinner() === $currentPlayer) {
-            // random opponent won
-            return -5;
+            // opponent won
+            $this->gameOver = true;
+            return -0.5;
         }
 
         // draw or still playing
-        return 0;
+        return 0.0;
     }
 
     public function isDone(): bool
     {
-        return $this->game->getWinner() !== null;
+        return $this->gameOver;
     }
 
     public function getGame(): TicTacToe
