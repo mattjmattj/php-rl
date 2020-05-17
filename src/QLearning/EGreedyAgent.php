@@ -2,18 +2,23 @@
 
 namespace RL\QLearning;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use RL\ActionSet;
 use RL\Agent as RLAgent;
 use RL\Environment;
+use RL\Verbose;
 
 /**
  * An epsilon-greedy Q-Learning agent
  */
-class EGreedyAgent implements RLAgent
+class EGreedyAgent implements RLAgent, Verbose
 {
     private QTable $qtable;
 
     private float $epsilon;
+
+    private LoggerInterface $logger;
 
     /**
      * @param ActionSet $actionSet - the ActionSet of the system
@@ -29,19 +34,24 @@ class EGreedyAgent implements RLAgent
     ) {
         $this->epsilon = $epsilon;
         $this->qtable = new QTable($actionSet, $learningRate, $discountFactor);
+        $this->logger = new NullLogger();
     }
 
     public function act(Environment $env): void
     {
         $state = $env->getState();
 
+        $this->logger->debug(__CLASS__ . " state is \n" . $state->uid());
         if (rand(0, 1000000) / 1000000.0 < $this->epsilon) {
             $actionId = array_rand($env->getActionSet()->getActions());
+            $this->logger->info(__CLASS__ . " choosing random action #$actionId");
         } else {
             $actionId = $this->qtable->act($state);
+            $this->logger->info(__CLASS__ . " choosing action #$actionId");
         }
 
         $reward = $env->act($actionId);
+        $this->logger->debug(__CLASS__ . " got reward $reward");
 
         $this->qtable->learn($state, $actionId, $reward, $env->getState(), $env->isDone());
     }
@@ -79,5 +89,10 @@ class EGreedyAgent implements RLAgent
     public function setDiscountFactor(float $discountFactor): void
     {
         $this->qtable->setDiscountFactor($discountFactor);
+    }
+
+    public function setLogger(LoggerInterface $logger): void
+    {
+        $this->logger = $logger;
     }
 }
