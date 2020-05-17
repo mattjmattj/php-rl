@@ -9,8 +9,8 @@ use RL\QLearning\EGreedyAgent;
 require_once(__DIR__.'/../../vendor/autoload.php');
 
 define('GAMES_PER_EPOCH', 100);
-define('EPSILON_DECAY', 0.97);
-define('EPSILON_MIN', 0.0001);
+define('EPSILON_DECAY', 0.9995);
+define('EPSILON_MIN', 0.001);
 
 $trainingOpponent = new RandomPlayer();
 $env = new TrainingEnvironment($trainingOpponent);
