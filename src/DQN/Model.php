@@ -13,6 +13,11 @@ interface Model
     public function predict(State $state): array;
 
     /**
+     * Computes a prediction only for one action
+     */
+    public function predictOne(State $state, int $actionId): float;
+
+    /**
      * Updates the model Q prediction for the given action
      * @return float the loss
      */

@@ -5,18 +5,13 @@ namespace RL\Examples\TicTacToe\RL\DQN;
 use RL\ActionSet;
 use RL\DQN\Model as DQNModel;
 use RL\Environment;
-use RL\Examples\TicTacToe\Game\TicTacToe;
 use RL\Examples\TicTacToe\RL\State;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
-use Rubix\ML\NeuralNet\ActivationFunctions\SoftPlus;
-use Rubix\ML\NeuralNet\ActivationFunctions\Softsign;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
-use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Initializers\He;
-use Rubix\ML\NeuralNet\Initializers\Uniform;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
 use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Continuous;
@@ -31,12 +26,10 @@ final class Model implements DQNModel
 
     private FeedForward $nn;
     private Environment $env;
-    private ActionSet $actionSet;
 
     public function __construct(Environment $env, ?FeedForward $nn = null)
     {
         $this->env = $env;
-        $this->actionSet = $env->getActionSet();
 
         $this->nn = $nn ?? new FeedForward(
             new Placeholder1D(self::INPUT_SIZE),
@@ -72,6 +65,17 @@ final class Model implements DQNModel
         }
 
         return $q;
+    }
+
+    public function predictOne(\RL\State $state, int $actionId): float
+    {
+        if (!$this->isActionLegal($actionId, $state)) {
+            return -100;
+        }
+
+        $features = $this->stateToFeatures($state, $actionId, null);
+        $output = $this->nn->infer(Unlabeled::quick([$features]))->column(0);
+        return $output[0];
     }
 
     private function isActionLegal(int $actionId, State $state): bool

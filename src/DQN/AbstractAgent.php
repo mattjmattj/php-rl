@@ -76,11 +76,12 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         foreach ($experienceTransitions as $ex) {
             $reward = $ex->reward;
             if (!$ex->done) {
-                $qNextState = $this->targetModel->predict($ex->nextState);
-                $qnext = max($qNextState);
+                $nextAction = $this->chooseAction($ex->nextState);
+                $qnext = $this->targetModel->predictOne($ex->nextState, $nextAction);
 
                 $reward += $this->discountFactor * $qnext;
-                $this->logger->debug("r=".$ex->reward."; q'(s',*)=$qnext");
+
+                $this->logger->debug("nextaction=$nextAction r=".$ex->reward."; qtarget(snext,nextaction)=$qnext");
             }
             $states[] = $ex->previousState;
             $actionIds[] = $ex->actionId;
