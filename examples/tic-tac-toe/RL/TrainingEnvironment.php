@@ -72,7 +72,7 @@ class TrainingEnvironment implements Environment
         if ($this->game->getWinner() === TicTacToe::DRAW) {
             // the game is a draw
             $this->gameOver = true;
-            return 0.5;
+            return 0.2;
         }
 
         // now the opponent plays
@@ -82,7 +82,13 @@ class TrainingEnvironment implements Environment
         if ($this->game->getWinner() === $currentPlayer) {
             // opponent won
             $this->gameOver = true;
-            return -0.5;
+            return -0.2;
+        }
+
+        if ($this->game->getWinner() === TicTacToe::DRAW) {
+            // the game is a draw
+            $this->gameOver = true;
+            return 0.2;
         }
 
         // draw or still playing
