@@ -4,5 +4,10 @@ A reinforcement learning library in PHP
 
 ## Algorithms
 
-- QLearning
+### Q-Learning familly
+
+- Q-Learning
 - SARSA
+- Deep Q-Learning
+
+### Policy gradient familly

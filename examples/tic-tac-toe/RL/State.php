@@ -9,7 +9,18 @@ class State implements RLState
 {
     private string $uid;
 
+    private array $grid;
+
+    private string $currentPlayer;
+
     public function __construct(TicTacToe $game)
+    {
+        $this->grid = $game->getGrid();
+        $this->currentPlayer = $game->getCurrentPlayer();
+        $this->defineUid($game);
+    }
+
+    private function defineUid(TicTacToe $game)
     {
         $g = $game->getGrid();
         $g = array_map(fn ($cell) => $cell == '' ? ' ' : $cell, $g);
@@ -27,5 +38,15 @@ EOT;
     public function uid(): string
     {
         return $this->uid;
+    }
+
+    public function getGrid(): array
+    {
+        return $this->grid;
+    }
+
+    public function getCurrentPlayer(): string
+    {
+        return $this->currentPlayer;
     }
 }
