@@ -79,11 +79,6 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
                 $qNextState = $this->targetModel->predict($ex->nextState);
                 $qnext = max($qNextState);
 
-            if ($qnext == -100) {
-                print_r($ex);
-                print_r($qNextState);
-                die();
-            }
                 $reward += $this->discountFactor * $qnext;
                 $this->logger->debug("r=".$ex->reward."; q'(s',*)=$qnext");
             }
