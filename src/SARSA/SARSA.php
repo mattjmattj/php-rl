@@ -3,7 +3,7 @@
 namespace RL\SARSA;
 
 use Closure;
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\State;
 
 /**
@@ -24,12 +24,12 @@ class SARSA
     /** gamma */
     private float $discountFactor;
 
-    private ActionSet $actionSet;
+    private ActionSpace $actionSpace;
 
     private Closure $initializer;
 
     /**
-     * @param ActionSet $actionSet - the ActionSet of the system
+     * @param ActionSpace $actionSpace - the ActionSpace of the system
      * @param Policy $policy
      * @param float $learningRate - the learning rate (default: 1.0)
      * @param float $discountFactor - (optional) the discount factor of the Bellman equation (default: 0.995)
@@ -37,14 +37,14 @@ class SARSA
      * @param array $q - (optional) the pre-filled table
      */
     public function __construct(
-        ActionSet $actionSet,
+        ActionSpace $actionSpace,
         Policy $policy,
         float $learningRate = 1.0,
         float $discountFactor = 0.995,
         ?Closure $initializer = null,
         array $q = []
     ) {
-        $this->actionSet = $actionSet;
+        $this->actionSpace = $actionSpace;
         $this->policy = $policy;
         $this->learningRate = $learningRate;
         $this->discountFactor = $discountFactor;
@@ -93,7 +93,7 @@ class SARSA
         }
 
         $this->q[$stateUid] = [];
-        foreach ($this->actionSet->getActionIds() as $actionId) {
+        foreach ($this->actionSpace->getActionIds() as $actionId) {
             $this->q[$stateUid][$actionId] = ($this->initializer)($stateUid, $actionId);
         }
 
@@ -123,7 +123,7 @@ class SARSA
     public function print(): void
     {
         echo "STATE ";
-        echo implode(' ', $this->actionSet->getActionIds());
+        echo implode(' ', $this->actionSpace->getActionIds());
         echo "\n";
         foreach ($this->q as $state => $qstate) {
             echo "$state ";

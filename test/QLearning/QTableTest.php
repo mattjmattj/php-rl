@@ -4,7 +4,7 @@ namespace RL\Test\QLearning;
 
 use phpDocumentor\Reflection\Types\Void_;
 use PHPUnit\Framework\TestCase;
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\QLearning\QTable;
 use RL\State;
 
@@ -20,12 +20,12 @@ final class QTableTest extends TestCase
     public function testCanSetAndGetTable(): void
     {
         $table = [[0,0,0],[1,1,1],[0,0,0]];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $qtable = new QTable($actionSet, 1.0, 0.95, null, $table);
+        $qtable = new QTable($actionSpace, 1.0, 0.95, null, $table);
 
         $this->assertEquals($table, $qtable->getTable());
     }
@@ -37,12 +37,12 @@ final class QTableTest extends TestCase
             'B' => [1,1,5],
             'C' => [0,-1,0.3]
         ];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $qtable = new QTable($actionSet, 1.0, 0.95, null, $table);
+        $qtable = new QTable($actionSpace, 1.0, 0.95, null, $table);
 
         $this->assertEquals(1, $qtable->act(new QTableTestState('A')));
         $this->assertEquals(2, $qtable->act(new QTableTestState('B')));
@@ -56,12 +56,12 @@ final class QTableTest extends TestCase
             'B' => [0,2,0],
             'C' => [0,0,0]
         ];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $qtable = new QTable($actionSet, 1.0, 0.9, null, $table);
+        $qtable = new QTable($actionSpace, 1.0, 0.9, null, $table);
 
         $qtable->learn(
             new QTableTestState('A'),
@@ -105,12 +105,12 @@ final class QTableTest extends TestCase
             'B' => [0,2,0],
             'C' => [0,0,0]
         ];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $qtable = new QTable($actionSet, 0.5, 0.9, null, $table);
+        $qtable = new QTable($actionSpace, 0.5, 0.9, null, $table);
 
         $qtable->learn(
             new QTableTestState('A'),

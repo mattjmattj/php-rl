@@ -15,7 +15,7 @@ define('EPSILON_MIN', 0.001);
 $trainingOpponent = new RandomPlayer();
 $env = new TrainingEnvironment($trainingOpponent);
 
-$agent = new EGreedyAgent($env->getActionSet(), 1.0, 1.0);
+$agent = new EGreedyAgent($env->getActionSpace(), 1.0, 1.0);
 
 $episode = 0;
 while ($agent->getEpsilon() > EPSILON_MIN) {

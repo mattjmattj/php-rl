@@ -2,7 +2,7 @@
 
 namespace RL;
 
-class ActionSet implements \Countable
+class ActionSpace implements \Countable
 {
     private array $actions = [];
 

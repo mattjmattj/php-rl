@@ -10,7 +10,7 @@ interface Environment
     /**
      *
      */
-    public function getActionSet(): ActionSet;
+    public function getActionSpace(): ActionSpace;
 
     /**
      *

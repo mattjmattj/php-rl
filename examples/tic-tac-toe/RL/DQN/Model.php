@@ -2,7 +2,7 @@
 
 namespace RL\Examples\TicTacToe\RL\DQN;
 
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\DQN\Model as DQNModel;
 use RL\Environment;
 use RL\Examples\TicTacToe\RL\State;
@@ -52,7 +52,7 @@ final class Model implements DQNModel
     public function predict(\RL\State $state): array
     {
         $q = [];
-        foreach($this->env->getActionSet()->getActionIds() as $actionId) {
+        foreach($this->env->getActionSpace()->getActionIds() as $actionId) {
             // a little hack here : we do not want to consider illegal actions at all
             // for performance reasons and noise, mainly
             if (!$this->isActionLegal($actionId, $state)) {
@@ -123,7 +123,7 @@ final class Model implements DQNModel
         }
 
         // actions
-        // foreach($this->actionSet->getActionIds() as $id) {
+        // foreach($this->actionSpace->getActionIds() as $id) {
         //     $features[] = $id === $actionId ? 1.0 : 0.0;
         // }
         $features[] = (float)$actionId;

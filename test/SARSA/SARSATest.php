@@ -3,7 +3,7 @@
 namespace RL\Test\SARSA;
 
 use PHPUnit\Framework\TestCase;
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\SARSA\Policy;
 use RL\SARSA\SARSA;
 use RL\State;
@@ -21,12 +21,12 @@ final class SARSATest extends TestCase
     public function testCanSetAndGetTable(): void
     {
         $table = [[0,0,0],[1,1,1],[0,0,0]];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $sarsa = new SARSA($actionSet, $this->policy, 1.0, 0.95, null, $table);
+        $sarsa = new SARSA($actionSpace, $this->policy, 1.0, 0.95, null, $table);
 
         $this->assertEquals($table, $sarsa->getTable());
     }
@@ -38,12 +38,12 @@ final class SARSATest extends TestCase
             'B' => [1,1,5],
             'C' => [0,-1,0.3]
         ];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $sarsa = new SARSA($actionSet, $this->policy, 1.0, 0.95, null, $table);
+        $sarsa = new SARSA($actionSpace, $this->policy, 1.0, 0.95, null, $table);
 
         $this->assertEquals(1, $sarsa->act(new SARSATestState('A')));
         $this->assertEquals(2, $sarsa->act(new SARSATestState('B')));
@@ -57,12 +57,12 @@ final class SARSATest extends TestCase
             'B' => [0,2,0],
             'C' => [0,0,0]
         ];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $sarsa = new SARSA($actionSet, $this->policy, 1.0, 0.9, null, $table);
+        $sarsa = new SARSA($actionSpace, $this->policy, 1.0, 0.9, null, $table);
 
         $sarsa->learn(
             new SARSATestState('A'),
@@ -106,12 +106,12 @@ final class SARSATest extends TestCase
             'B' => [0,2,0],
             'C' => [0,0,0]
         ];
-        $actionSet = new ActionSet();
-        $actionSet->addAction(0);
-        $actionSet->addAction(1);
-        $actionSet->addAction(2);
+        $actionSpace = new ActionSpace();
+        $actionSpace->addAction(0);
+        $actionSpace->addAction(1);
+        $actionSpace->addAction(2);
 
-        $sarsa = new SARSA($actionSet, $this->policy, 0.5, 0.9, null, $table);
+        $sarsa = new SARSA($actionSpace, $this->policy, 0.5, 0.9, null, $table);
 
         $sarsa->learn(
             new SARSATestState('A'),

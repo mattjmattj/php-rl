@@ -4,7 +4,7 @@ namespace RL\QLearning;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\Agent as RLAgent;
 use RL\Environment;
 use RL\Verbose;
@@ -21,19 +21,19 @@ class EGreedyAgent implements RLAgent, Verbose
     private LoggerInterface $logger;
 
     /**
-     * @param ActionSet $actionSet - the ActionSet of the system
+     * @param ActionSpace $actionSpace - the ActionSpace of the system
      * @param float $epsilon - the exploration rate (probability of picking a random action)
      * @param float $learningRate - the learning rate of the q-table
      * @param float $discountFactor - the discount factor of the Bellman equation
      */
     public function __construct(
-        ActionSet $actionSet,
+        ActionSpace $actionSpace,
         float $epsilon = 1.0,
         float $learningRate = 1.0,
         float $discountFactor = 0.995
     ) {
         $this->epsilon = $epsilon;
-        $this->qtable = new QTable($actionSet, $learningRate, $discountFactor);
+        $this->qtable = new QTable($actionSpace, $learningRate, $discountFactor);
         $this->logger = new NullLogger();
     }
 
@@ -43,7 +43,7 @@ class EGreedyAgent implements RLAgent, Verbose
 
         $this->logger->debug(__CLASS__ . " state is \n" . $state->uid());
         if (rand(0, 1000000) / 1000000.0 < $this->epsilon) {
-            $actionId = array_rand($env->getActionSet()->getActions());
+            $actionId = array_rand($env->getActionSpace()->getActions());
             $this->logger->info(__CLASS__ . " choosing random action #$actionId");
         } else {
             $actionId = $this->qtable->act($state);

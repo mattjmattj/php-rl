@@ -2,7 +2,7 @@
 
 namespace RL\DQN;
 
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\Environment;
 use RL\State;
 
@@ -27,7 +27,7 @@ class EGreedyAgent extends AbstractAgent
 
     protected function chooseRandomAction(): int
     {
-        return array_rand($this->env->getActionSet()->getActionIds());
+        return array_rand($this->env->getActionSpace()->getActionIds());
     }
 
     public function chooseAction(State $state): int

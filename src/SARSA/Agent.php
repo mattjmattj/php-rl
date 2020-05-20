@@ -2,7 +2,7 @@
 
 namespace RL\SARSA;
 
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\Agent as RLAgent;
 use RL\Environment;
 

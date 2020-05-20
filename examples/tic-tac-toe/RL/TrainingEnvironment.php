@@ -2,7 +2,7 @@
 
 namespace RL\Examples\TicTacToe\RL;
 
-use RL\ActionSet;
+use RL\ActionSpace;
 use RL\Examples\TicTacToe\Game\TicTacToe;
 
 use RL\Environment;
@@ -12,7 +12,7 @@ class TrainingEnvironment implements Environment
 {
     private TicTacToe $game;
 
-    private ActionSet $actionSet;
+    private ActionSpace $actionSpace;
 
     private Player $opponent;
 
@@ -28,23 +28,23 @@ class TrainingEnvironment implements Environment
     {
         $this->game = new TicTacToe();
 
-        $this->actionSet = new ActionSet();
-        $this->actionSet->addAction(0, 'A3');
-        $this->actionSet->addAction(1, 'B3');
-        $this->actionSet->addAction(2, 'C3');
-        $this->actionSet->addAction(3, 'A2');
-        $this->actionSet->addAction(4, 'B2');
-        $this->actionSet->addAction(5, 'C2');
-        $this->actionSet->addAction(6, 'A1');
-        $this->actionSet->addAction(7, 'B1');
-        $this->actionSet->addAction(8, 'C1');
+        $this->actionSpace = new ActionSpace();
+        $this->actionSpace->addAction(0, 'A3');
+        $this->actionSpace->addAction(1, 'B3');
+        $this->actionSpace->addAction(2, 'C3');
+        $this->actionSpace->addAction(3, 'A2');
+        $this->actionSpace->addAction(4, 'B2');
+        $this->actionSpace->addAction(5, 'C2');
+        $this->actionSpace->addAction(6, 'A1');
+        $this->actionSpace->addAction(7, 'B1');
+        $this->actionSpace->addAction(8, 'C1');
 
         $this->gameOver = false;
     }
 
-    public function getActionSet(): ActionSet
+    public function getActionSpace(): ActionSpace
     {
-        return $this->actionSet;
+        return $this->actionSpace;
     }
 
     public function getState(): State
