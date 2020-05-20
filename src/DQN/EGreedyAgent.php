@@ -19,9 +19,15 @@ class EGreedyAgent extends AbstractAgent
         float $epsilon,
         ExperienceReplayer $replayer,
         int $updateTargetModelInterval,
-        Environment $env
+        Environment $env,
+        bool $useDoubleDQN = true
     ) {
-        parent::__construct($modelProvider, $discountFactor, $replayer, $updateTargetModelInterval, $env);
+        parent::__construct($modelProvider,
+            $discountFactor,
+            $replayer,
+            $updateTargetModelInterval,
+            $env,
+            $useDoubleDQN);
         $this->epsilon = $epsilon;
     }
 

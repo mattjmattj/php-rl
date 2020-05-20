@@ -17,6 +17,7 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
     private int $updateTargetModelInterval;
     protected LoggerInterface $logger;
     protected Environment $env;
+    protected bool $useDoubleDQN;
 
 
     public function __construct(
@@ -24,7 +25,8 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         float $discountFactor,
         ExperienceReplayer $replayer,
         int $updateTargetModelInterval,
-        Environment $env
+        Environment $env,
+        bool $useDoubleDQN = true
     ) {
         $this->modelProvider = $modelProvider;
         $this->discountFactor = $discountFactor;
@@ -34,6 +36,7 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         $this->env = $env;
         $this->model = $this->modelProvider->createModel($env);
         $this->targetModel = $this->modelProvider->createModel($env);
+        $this->useDoubleDQN = $useDoubleDQN;
     }
 
     /**
@@ -76,8 +79,17 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         foreach ($experienceTransitions as $ex) {
             $reward = $ex->reward;
             if (!$ex->done) {
-                $nextAction = $this->chooseAction($ex->nextState);
-                $qnext = $this->targetModel->predictOne($ex->nextState, $nextAction);
+                $predictionNext = $this->model->predict($ex->nextState);
+
+                if ($this->useDoubleDQN) {
+                    // double DQN : model chooses action, target estimates Q
+                    $nextAction = array_search(max($predictionNext), $predictionNext);
+                    $qnext = $this->targetModel->predictOne($ex->nextState, $nextAction);
+                } else {
+                    // vanilla DQN : target chooses action and estimates Q
+                    $qnext = max($predictionNext);
+                    $nextAction = array_search($qnext, $predictionNext);
+                }
 
                 $reward += $this->discountFactor * $qnext;
 
