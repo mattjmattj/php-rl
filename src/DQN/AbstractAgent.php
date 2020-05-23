@@ -87,8 +87,9 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
                     $qnext = $this->targetModel->predictOne($ex->nextState, $nextAction);
                 } else {
                     // vanilla DQN : target chooses action and estimates Q
-                    $qnext = max($predictionNext);
-                    $nextAction = array_search($qnext, $predictionNext);
+                    $targtetPredictionNext = $this->targetModel->predict($ex->nextState);
+                    $qnext = max($targtetPredictionNext);
+                    $nextAction = array_search($qnext, $targtetPredictionNext);
                 }
 
                 $reward += $this->discountFactor * $qnext;
