@@ -26,17 +26,18 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         ExperienceReplayer $replayer,
         int $updateTargetModelInterval,
         Environment $env,
-        bool $useDoubleDQN = true
+        bool $useDoubleDQN = true,
+        ?LoggerInterface $logger = null
     ) {
         $this->modelProvider = $modelProvider;
         $this->discountFactor = $discountFactor;
         $this->replayer = $replayer;
         $this->updateTargetModelInterval = $updateTargetModelInterval;
-        $this->logger = new NullLogger();
         $this->env = $env;
         $this->model = $this->modelProvider->createModel($env);
         $this->targetModel = $this->modelProvider->createModel($env);
         $this->useDoubleDQN = $useDoubleDQN;
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**

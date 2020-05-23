@@ -2,6 +2,7 @@
 
 namespace RL\DQN;
 
+use Psr\Log\LoggerInterface;
 use RL\ActionSpace;
 use RL\Environment;
 use RL\State;
@@ -20,14 +21,18 @@ class EGreedyAgent extends AbstractAgent
         ExperienceReplayer $replayer,
         int $updateTargetModelInterval,
         Environment $env,
-        bool $useDoubleDQN = true
+        bool $useDoubleDQN = true,
+        ?LoggerInterface $logger = null
     ) {
-        parent::__construct($modelProvider,
+        parent::__construct(
+            $modelProvider,
             $discountFactor,
             $replayer,
             $updateTargetModelInterval,
             $env,
-            $useDoubleDQN);
+            $useDoubleDQN,
+            $logger
+        );
         $this->epsilon = $epsilon;
     }
 
