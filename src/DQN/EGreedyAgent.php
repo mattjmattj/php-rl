@@ -12,6 +12,9 @@ use RL\State;
  */
 class EGreedyAgent extends AbstractAgent
 {
+    /** maximum precision when using rand() */
+    const RAND_PRECISION = 1e9;
+
     protected float $epsilon;
 
     public function __construct(
@@ -43,7 +46,7 @@ class EGreedyAgent extends AbstractAgent
 
     public function chooseAction(State $state): int
     {
-        if (rand(0, 1000000) / 1000000.0 < $this->epsilon) {
+        if (rand(0, self::RAND_PRECISION) / self::RAND_PRECISION < $this->epsilon) {
             $this->logger->debug('choosing random action');
             return $this->chooseRandomAction();
         } else {
