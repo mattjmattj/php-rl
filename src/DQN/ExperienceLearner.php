@@ -8,7 +8,7 @@ interface ExperienceLearner
 {
     /**
      * @param ExperienceTransition[] $experienceTransitions
-     * @return float loss
+     * @return float[] error between target and estimation, for each given transition
      */
-    public function learn(array $experienceTransitions): float;
+    public function learn(array $experienceTransitions): array;
 }

@@ -70,13 +70,14 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         $this->targetModel = $this->modelProvider->createFromModel($this->model);
     }
 
-    public function learn(array $experienceTransitions): float {
+    public function learn(array $experienceTransitions): array
+    {
         static $count;
         if (!isset($count)) {
             $count = 1;
         }
 
-        $states = $actionIds = $rewards = [];
+        $states = $actionIds = $rewards = $errors = [];
         foreach ($experienceTransitions as $ex) {
             $reward = $ex->reward;
             if (!$ex->done) {
@@ -95,8 +96,14 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
 
                 $reward += $this->discountFactor * $qnext;
 
-                $this->logger->debug("nextaction=$nextAction r=".$ex->reward."; qtarget(snext,nextaction)=$qnext");
+                $error = abs($predictionNext[$nextAction] - $reward);
+                $errors[] = $error;
+                
+                $this->logger->debug("nextaction=$nextAction r=".$ex->reward."; qtarget(snext,nextaction)=$qnext; error=$error");
+            } else {
+                $errors[] = 0.0;
             }
+            
             $states[] = $ex->previousState;
             $actionIds[] = $ex->actionId;
             $rewards[] = $reward;
@@ -112,7 +119,10 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         }
         ++$count;
 
-        return $loss;
+        $this->logger->debug("errors:");
+        $this->logger->debug(print_r($errors, true));
+
+        return $errors;
     }
 
     public function modelPredict(State $state): array
