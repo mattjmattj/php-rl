@@ -23,7 +23,8 @@ class RandomBatchExperienceReplayer implements ExperienceReplayer
         $this->buffer = [];
     }
 
-    public function store(ExperienceTransition $experienceTransition): void {
+    public function store(ExperienceTransition $experienceTransition): void
+    {
         while (count($this->buffer) >= $this->maxSize) {
             array_pop($this->buffer);
         }
