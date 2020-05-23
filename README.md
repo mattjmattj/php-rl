@@ -2,6 +2,11 @@
 
 A reinforcement learning library in PHP
 
+## Disclaimer
+
+This library is basically me reimplementing well-known RL algorithms in order to better
+understand them.
+
 ## Algorithms
 
 ### Value-based algorithms
