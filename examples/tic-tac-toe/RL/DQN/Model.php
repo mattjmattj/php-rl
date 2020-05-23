@@ -33,15 +33,19 @@ final class Model implements DQNModel
 
         $this->nn = $nn ?? new FeedForward(
             new Placeholder1D(self::INPUT_SIZE),
-            [ 
-                new Dense(300, 0.2, true, new He()),
+            [
+                new Dense(100, 0.2, true, new He()),
+                new Activation(new ReLU()),
+                new Dense(100, 0.2, true, new He()),
+                new Activation(new ReLU()),
+                new Dense(100, 0.2, true, new He()),
                 new Activation(new ReLU()),
                 new Dense(1, 0.0, true, new Xavier2()),
             ],
             new Continuous(
                 new HuberLoss()
             ),
-            new RMSProp(0.0001)
+            new RMSProp(0.003)
         );
     }
 
@@ -52,7 +56,7 @@ final class Model implements DQNModel
     public function predict(\RL\State $state): array
     {
         $q = [];
-        foreach($this->env->getActionSpace()->getActionIds() as $actionId) {
+        foreach ($this->env->getActionSpace()->getActionIds() as $actionId) {
             // a little hack here : we do not want to consider illegal actions at all
             // for performance reasons and noise, mainly
             if (!$this->isActionLegal($actionId, $state)) {
@@ -114,7 +118,7 @@ final class Model implements DQNModel
         $currentPlayer = $state->getCurrentPlayer();
         
         // grid
-        foreach($state->getGrid() as $cell) {
+        foreach ($state->getGrid() as $cell) {
             if (empty($cell)) {
                 $features[] = 0.0;
             } else {
@@ -122,10 +126,6 @@ final class Model implements DQNModel
             }
         }
 
-        // actions
-        // foreach($this->actionSpace->getActionIds() as $id) {
-        //     $features[] = $id === $actionId ? 1.0 : 0.0;
-        // }
         $features[] = (float)$actionId;
 
         return $features;
