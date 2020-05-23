@@ -4,6 +4,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LoggerTrait;
 use Psr\Log\LogLevel;
 use RL\DQN\EGreedyAgent;
+use RL\DQN\PrioritizedExperienceReplayer;
 use RL\DQN\RandomBatchExperienceReplayer;
 use RL\Examples\TicTacToe\Game\ConsolePlayer;
 use RL\Examples\TicTacToe\Game\TicTacToe;
@@ -13,23 +14,14 @@ use RL\Examples\TicTacToe\RL\TrainingEnvironment;
 
 require_once(__DIR__.'/../../vendor/autoload.php');
 
-define('GAMES_PER_EPOCH', 1000);
-define('EPSILON_DECAY', 0.95);
-define('EPSILON_MIN', 0.01);
+define('GAMES_PER_EPOCH', 100);
+define('EPSILON_DECAY', 0.9);
+define('EPSILON_MIN', 0.001);
 
 $trainingOpponent = new RandomPlayer();
 $env = new TrainingEnvironment($trainingOpponent);
 
-$agent = new EGreedyAgent(
-    new ModelProvider($env),
-    0.95,
-    1.0,
-    new RandomBatchExperienceReplayer(32, 100000, 1),
-    1000,
-    $env
-);
-
-$logger = new class implements LoggerInterface {
+class Logger implements LoggerInterface {
     use LoggerTrait;
     public function log($level, $message, array $context = array())
     {
@@ -37,8 +29,29 @@ $logger = new class implements LoggerInterface {
             echo date(DATE_ATOM) . "|[$level] $message". PHP_EOL;
         }
     }
-};
-// $agent->setLogger($logger);
+}
+
+$logger = new Logger();
+
+$agent = new EGreedyAgent(
+    new ModelProvider($env),
+    0.95,
+    1.0,
+    new PrioritizedExperienceReplayer(
+        32,
+        1000,
+        0.01,
+        1.0, //reward is never > 1.0
+        0.6,
+        1
+        //, $logger
+    ),
+    1000,
+    $env,
+    true
+    //, $logger
+);
+
 
 $episode = 0;
 while ($agent->getEpsilon() > EPSILON_MIN) {
