@@ -55,12 +55,12 @@ want to play, as follows
 
 ## DQN
 
-In the Deep Q-Learning part, the agent is an epsilon-greedy DQN agent.
+In the Deep Q-Learning part, the agent is an epsilon-greedy Double DQN agent with Prioritized Experience Replay.
 
 
 ### Model 
 
-In this example, we will use Rubix/ML _middle_ level API
+In this example, we will use Rubix/ML _middle_ level API to build the model
 
 #### Input (features)
 
@@ -76,7 +76,7 @@ A "Continuous" layer, which outputs a single float that will represent the Q val
 
 #### Layers
 
-A single, fully-connected layer with RELU activation
+3 fully-connected layers with RELU activation
 
 ### Training
 
