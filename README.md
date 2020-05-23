@@ -28,7 +28,7 @@ Experience replay is available as 2 distinct implementations:
 - random minibatch
 - prioritized experience replay (Tom Schaul, John Quan, Ioannis Antonoglou, David Silver - Prioritized Experience Replay, [arXiv:1511.05952](https://arxiv.org/abs/1511.05952) [cs.LG], 2015)
 
-### Policy-based familly
+### Policy-based algorithms
 
 TODO
 
