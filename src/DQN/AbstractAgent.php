@@ -60,7 +60,7 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
     
     public function updateTargetModel(): void
     {
-        $this->logger->debug(__CLASS__ . ' : updating target model');
+        $this->logger->info('updating target model');
         $this->targetModel = $this->modelProvider->createFromModel($this->model);
     }
 
@@ -74,9 +74,12 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         $states = $actionIds = $rewards = $errors = [];
         foreach ($experienceTransitions as $ex) {
             $reward = $ex->reward;
-            if (!$ex->done) {
-                $predictionNext = $this->model->predict($ex->nextState);
+            $predictionNext = $this->model->predict($ex->nextState);
 
+            if ($ex->done) {
+                $error = 0.0;
+                $this->logger->debug("done. r=".$reward);
+            } else {
                 if ($this->useDoubleDQN) {
                     // double DQN : model chooses action, target estimates Q
                     $nextAction = array_search(max($predictionNext), $predictionNext);
@@ -90,23 +93,21 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
 
                 $reward += $this->discountFactor * $qnext;
 
-                $error = abs($predictionNext[$nextAction] - $reward);
-                $errors[] = $error;
-                
-                $this->logger->debug("nextaction=$nextAction r=".$ex->reward."; qtarget(snext,nextaction)=$qnext; error=$error");
-            } else {
-                $errors[] = 0.0;
+                $error = abs($predictionNext[$nextAction] - $reward);  
+                $this->logger->debug("nextaction=$nextAction r=".$reward."; qtarget(snext,nextaction)=$qnext; error=$error");
             }
-            
+                
+            $errors[] = $error;
+
+                        
             $states[] = $ex->previousState;
             $actionIds[] = $ex->actionId;
             $rewards[] = $reward;
-            $this->logger->debug("reward=$reward");
         }
 
         $loss = $this->model->fitBatch($states, $actionIds, $rewards);
 
-        $this->logger->info('experience replay. loss=' . $loss);
+        $this->logger->info('loss=' . $loss);
 
         if ($count % $this->updateTargetModelInterval === 0) {
             $this->updateTargetModel();
