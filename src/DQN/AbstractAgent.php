@@ -40,16 +40,10 @@ abstract class AbstractAgent implements \RL\Agent, ExperienceLearner
         $this->logger = $logger ?? new NullLogger();
     }
 
-    /**
-     * Concrete implementation must choose actions according to a policy
-     * @return int action id
-     */
-    abstract public function chooseAction(State $state): int;
-
     public function act(Environment $env): void
     {
         $state = $env->getState();
-        $actionId = $this->chooseAction($state);
+        $actionId = $this->pickAction($state);
 
         $reward = $env->act($actionId);
 

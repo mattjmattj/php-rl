@@ -39,16 +39,16 @@ class EGreedyAgent extends AbstractAgent
         $this->epsilon = $epsilon;
     }
 
-    protected function chooseRandomAction(): int
+    protected function chooseRandomAction(State $state): int
     {
         return array_rand($this->env->getActionSpace()->getActions());
     }
 
-    public function chooseAction(State $state): int
+    public function pickAction(State $state): int
     {
         if (rand(0, self::RAND_PRECISION) / self::RAND_PRECISION < $this->epsilon) {
             $this->logger->debug('choosing random action');
-            return $this->chooseRandomAction();
+            return $this->chooseRandomAction($state);
         } else {
             $qstate = $this->modelPredict($state);
             $q = max($qstate);

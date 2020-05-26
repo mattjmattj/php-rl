@@ -42,6 +42,7 @@ class EGreedyAgent implements RLAgent, Verbose
         $state = $env->getState();
 
         $this->logger->debug(__CLASS__ . " state is \n" . $state->uid());
+        
         if (rand(0, 1000000) / 1000000.0 < $this->epsilon) {
             $actionId = array_rand($env->getActionSpace()->getActions());
             $this->logger->info(__CLASS__ . " choosing random action #$actionId");
@@ -49,11 +50,16 @@ class EGreedyAgent implements RLAgent, Verbose
             $actionId = $this->qtable->act($state);
             $this->logger->info(__CLASS__ . " choosing action #$actionId");
         }
-
         $reward = $env->act($actionId);
+
         $this->logger->debug(__CLASS__ . " got reward $reward");
 
         $this->qtable->learn($state, $actionId, $reward, $env->getState(), $env->isDone());
+    }
+
+    public function pickAction(\RL\State $state): int
+    {
+        return $this->qtable->act($state);
     }
 
     public function getQTable(): QTable

@@ -26,4 +26,9 @@ class Agent implements RLAgent
 
         $this->sarsa->learn($state, $actionId, $reward, $env->getState(), $env->isDone());
     }
+
+    public function pickAction(\RL\State $state): int
+    {
+        return $this->sarsa->act($state);
+    }
 }
