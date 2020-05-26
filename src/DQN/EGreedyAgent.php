@@ -41,7 +41,7 @@ class EGreedyAgent extends AbstractAgent
 
     protected function chooseRandomAction(): int
     {
-        return array_rand($this->env->getActionSpace()->getActionIds());
+        return array_rand($this->env->getActionSpace()->getActions());
     }
 
     public function chooseAction(State $state): int
