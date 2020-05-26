@@ -5,11 +5,14 @@ namespace RL\Examples\TicTacToe\RL\DQN;
 use RL\ActionSpace;
 use RL\DQN\Model as DQNModel;
 use RL\Environment;
+use RL\Examples\TicTacToe\RL\LegalActionTrait;
 use RL\Examples\TicTacToe\RL\State;
 use Rubix\ML\Datasets\Labeled;
 use Rubix\ML\Datasets\Unlabeled;
+use Rubix\ML\NeuralNet\ActivationFunctions\LeakyReLU;
 use Rubix\ML\NeuralNet\ActivationFunctions\ReLU;
 use Rubix\ML\NeuralNet\CostFunctions\HuberLoss;
+use Rubix\ML\NeuralNet\CostFunctions\LeastSquares;
 use Rubix\ML\NeuralNet\FeedForward;
 use Rubix\ML\NeuralNet\Initializers\He;
 use Rubix\ML\NeuralNet\Initializers\Xavier2;
@@ -17,12 +20,15 @@ use Rubix\ML\NeuralNet\Layers\Activation;
 use Rubix\ML\NeuralNet\Layers\Continuous;
 use Rubix\ML\NeuralNet\Layers\Dense;
 use Rubix\ML\NeuralNet\Layers\Placeholder1D;
+use Rubix\ML\NeuralNet\Optimizers\Adam;
 use Rubix\ML\NeuralNet\Optimizers\RMSProp;
 
 final class Model implements DQNModel
 {
-    /** input = 9(grid) + 1(action) */
-    const INPUT_SIZE = 10;
+    use LegalActionTrait;
+
+    /** input = 9(grid) + 9(action) */
+    const INPUT_SIZE = 18;
 
     private FeedForward $nn;
     private Environment $env;
@@ -34,18 +40,16 @@ final class Model implements DQNModel
         $this->nn = $nn ?? new FeedForward(
             new Placeholder1D(self::INPUT_SIZE),
             [
-                new Dense(100, 0.2, true, new He()),
+                new Dense(50, 0.0, true, new He()),
                 new Activation(new ReLU()),
-                new Dense(100, 0.2, true, new He()),
-                new Activation(new ReLU()),
-                new Dense(100, 0.2, true, new He()),
+                new Dense(50, 0.0, true, new He()),
                 new Activation(new ReLU()),
                 new Dense(1, 0.0, true, new Xavier2()),
             ],
             new Continuous(
                 new HuberLoss()
             ),
-            new RMSProp(0.003)
+            new RMSProp(0.001)
         );
     }
 
@@ -82,12 +86,6 @@ final class Model implements DQNModel
         return $output[0];
     }
 
-    private function isActionLegal(int $actionId, State $state): bool
-    {
-        $g = $state->getGrid();
-        return empty($g[$actionId]);
-    }
-
     /**
      * Updates the model Q prediction for the given action
      * @return float the loss
@@ -122,11 +120,14 @@ final class Model implements DQNModel
             if (empty($cell)) {
                 $features[] = 0.0;
             } else {
-                $features[] = $cell === $currentPlayer ? 1.0 : -1.0;
+                $features[] = $cell === $currentPlayer ? 2.0 : 1.0;
             }
         }
 
-        $features[] = (float)$actionId;
+        // actions
+        $actions = array_fill(0, 9, 0.0);
+        $actions[$actionId] = 1.0;
+        $features = array_merge($features, $actions);
 
         return $features;
     }

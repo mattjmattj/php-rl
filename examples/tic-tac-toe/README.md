@@ -55,7 +55,7 @@ want to play, as follows
 
 ## DQN
 
-In the Deep Q-Learning part, the agent is an epsilon-greedy Double DQN agent with Prioritized Experience Replay.
+In the Deep Q-Learning part, the agent is an epsilon-greedy Double DQN agent.
 
 
 ### Model 
@@ -66,7 +66,7 @@ In this example, we will use Rubix/ML _middle_ level API to build the model
 
 Maybe not the optimal way of implementing it. The features are as follows:
 - the grid (9 x {-1.0,0.0,1.0})
-- the actions (1 x [1.0,8.0])
+- the actions (9 x {0.0,1.0})
 
 With this design, we have to run 9 forward passes for each time the agent plays.
 
@@ -76,7 +76,7 @@ A "Continuous" layer, which outputs a single float that will represent the Q val
 
 #### Layers
 
-3 fully-connected layers with RELU activation
+2 fully-connected layers with RELU activation
 
 ### Training
 
@@ -85,9 +85,6 @@ Run
 ```
 php train_dqn.php
 ```
-
-With the current hyperparameters and model configuration, the training may take a
-while before it produces any good results
 
 ### Playing against the agent
 
